@@ -23,8 +23,7 @@ function addElements(element, array, callback) {
   }
 }
 
-let gettingStoredStats = browser.storage.local.get();
-gettingStoredStats.then(results => {
+chrome.storage.local.get(null, (results => {
   if (results.type.length === 0 || results.host.length === 0) {
     return;
   }
@@ -41,4 +40,4 @@ gettingStoredStats.then(results => {
     return `${type}: ${results.type[type]} use(s)`;
   });
 
-});
+}));

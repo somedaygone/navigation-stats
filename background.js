@@ -1,7 +1,5 @@
 // Load existent stats with the storage API.
-let gettingStoredStats = browser.storage.local.get();
-
-gettingStoredStats.then(results => {
+chrome.storage.local.get(null, (results => {
   // Initialize the saved stats if not yet initialized.
   if (!results.stats) {
     results = {
@@ -12,7 +10,7 @@ gettingStoredStats.then(results => {
 
   // Monitor completed navigation events and update
   // stats accordingly.
-  browser.webNavigation.onCommitted.addListener((evt) => {
+  chrome.webNavigation.onCommitted.addListener((evt) => {
     if (evt.frameId !== 0) {
       return;
     }
@@ -22,10 +20,10 @@ gettingStoredStats.then(results => {
     results.type[transitionType]++;
 
     // Persist the updated stats.
-    browser.storage.local.set(results);
+    chrome.storage.local.set(results);
   });
 
-  browser.webNavigation.onCompleted.addListener(evt => {
+  chrome.webNavigation.onCompleted.addListener(evt => {
     // Filter out any sub-frame related navigation event
     if (evt.frameId !== 0) {
       return;
@@ -37,7 +35,7 @@ gettingStoredStats.then(results => {
     results.host[url.hostname]++;
 
     // Persist the updated stats.
-    browser.storage.local.set(results);
+    chrome.storage.local.set(results);
   }, {
     url: [{schemes: ["http", "https"]}]});
-});
+}));
